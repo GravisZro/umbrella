@@ -1,5 +1,6 @@
 //include <BOSL2/std.scad>
 use <screwgen/circlestack_thread3.scad>
+use <toothed_interlock.scad>
 
 pole_radius = 6.25;
 
@@ -30,6 +31,7 @@ segment_count = 8;
 degrees_per_segment=360 / segment_count;
 side_length=5;
 
+nil = $preview ? 0.001 : 0;
 
 difference()
 {
@@ -44,7 +46,7 @@ difference()
                     translate([base_radius - support_radius, 0, base_height / 2])
                         rotate([90,90,0])
                             cylinder(h=side_length, r=support_radius, center=true);
-            
+
             // mount base outer ring joint connector
             color("yellow")
                 hull()
@@ -90,29 +92,34 @@ difference()
                 }
         }
     }
-    
+
     // geometry to be subtracted
     union()
     {
         // mount geometry for mounting holes
-        translate([0, 0, base_height + mount_transition_height])
-            rotate([0,0,degrees_per_segment / 2])
-                translate([0, 0, mount_height / 2])
-                {
-                    // opposing side of mount hole
-                    rotate([-90,0,0])
-                            cylinder(h=mount_radius, r=mount_hole_radius*3/4, center=false);
 
-                    // side with mounting hole
-                    rotate([90,0,0])
-                    {
-                        // mount hole
-                        cylinder(h=mount_radius, r=mount_hole_radius, center=false);
-                        // mount hole relief
-                        translate([0, 0, mount_radius - mount_hole_radius / 2])
-                            cylinder(h=1, r1=mount_hole_radius, r2=mount_hole_radius * 1.5, center=false);
-                    }
+        rotate([0,0,degrees_per_segment / 2])
+            translate([0, 0, base_height + mount_transition_height + mount_height / 2])
+            {
+                // opposing side of mount hole
+                rotate([-90,0,0])
+                        cylinder(h=mount_radius, r=mount_hole_radius*3/4, center=false);
+
+                // side with mounting hole
+                rotate([90,0,0])
+                {
+                    // mount hole
+                    cylinder(h=mount_radius, r=mount_hole_radius, center=false);
+                    // mount hole relief
+                    translate([0, 0, mount_radius - mount_hole_radius / 2])
+                        cylinder(h=1, r1=mount_hole_radius, r2=mount_hole_radius * 1.5, center=false);
                 }
+            }
+
+            // mounting teeth
+            color("purple")
+                translate([0, 0, -nil])
+                    toothed_interlock(inner_r = pole_radius, outer_r = pole_radius + 2);
 
         // pole hole
         cylinder(h=50, r=pole_radius, center=true);

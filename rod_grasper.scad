@@ -7,16 +7,16 @@ module rod_grasper(h, screw_r,
 min_r, max_r, 
 depth, profile, 
 lead_in, 
-split_count = 8, split = 0.15, nil = $preview ? 0.0001 : 1)
+split_count = 8, split = 0.15, nil = $preview ? 0.001 : 0)
 {
-    assert(is_num(h), "rod_grasper: parameter 'h' (height) must be defined as a numeric value");
-    assert(is_num(screw_r), "rod_grasper: parameter 'screw_r' (screw radius) must be defined as a numeric value");
-    assert(is_num(min_r), "rod_grasper: parameter 'min_r' (minimum rod radius) must be defined as a numeric value");
-    assert(is_num(max_r), "rod_grasper: parameter 'max_r' (maximum rod radius) must be defined as a numeric value");
-    assert(is_num(split_count), "rod_grasper: parameter 'split_count' (number of splits in screw) must be a numeric value");
-    assert(is_num(split), "rod_grasper: parameter 'split' (maximum split distance in screw) must be a numeric value");    
-    assert(is_num(depth) || is_undef(depth), "rod_grasper: parameter 'depth' (depth of screw) must be a numeric value");
-    assert(is_num(profile) || is_undef(profile), "rod_grasper: parameter 'profile' (profile of screw) must be a numeric value");
+    assert(is_num(h), "rod_grasper: argument 'h' (height) must be defined as a numeric value");
+    assert(is_num(screw_r), "rod_grasper: argument 'screw_r' (screw radius) must be defined as a numeric value");
+    assert(is_num(min_r), "rod_grasper: argument 'min_r' (minimum rod radius) must be defined as a numeric value");
+    assert(is_num(max_r), "rod_grasper: argument 'max_r' (maximum rod radius) must be defined as a numeric value");
+    assert(is_num(split_count), "rod_grasper: argument 'split_count' (number of splits in screw) must be a numeric value");
+    assert(is_num(split), "rod_grasper: argument 'split' (maximum split distance in screw) must be a numeric value");
+    assert(is_num(depth) || is_undef(depth), "rod_grasper: argument 'depth' (depth of screw) must be a numeric value");
+    assert(is_num(profile) || is_undef(profile), "rod_grasper: argument 'profile' (profile of screw) must be a numeric value");
         
     screw_dia = screw_r * 2;
 
@@ -35,9 +35,9 @@ split_count = 8, split = 0.15, nil = $preview ? 0.0001 : 1)
                 cylinder(h = h - lead_in_height + 2 * nil, r1 = max_r, r2 = min_r, center = false);
             translate([0, 0, -nil])
                 cylinder(h = lead_in_height + 2 * nil, r = max_r, center = false);
-        }   
+        }
 
-        for(angle = [0 : degrees_per_segment : 360 - degrees_per_segment])            
+        for(angle = [0 : degrees_per_segment : 360 - degrees_per_segment])
             // angle = k * (360 / segcount), k=0 to (segcount - 1)
             rotate([90, 0, angle])
                 linear_extrude(screw_r)
